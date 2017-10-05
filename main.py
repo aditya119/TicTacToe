@@ -48,32 +48,32 @@ def getBoardCopy(board):
 	dupeBoard = board.copy()
 	return dupeBoard
 
-def minimax(board, player):
-	availableSpots = getEmptyPlaces(board)
-	
-	# assigning socres to various scenarios
-	if (winning(board, '0')):
-		return {'score': 10}
-	elif (len(availableSpots) == 0):
-		return {'score': 0}
-	elif (winning(board, 'x')):
-		return {'score': -10}
-
+def minmax(board, player):
+	emptySpots = getEmptyPlaces(board);
+	#Scores for terminal positions
+	if (winning(board, "x")):
+		return {'score':-10}
+	elif (winning(board, "0")):
+		return {'score':10}
+	elif (len(emptySpots) == 0):
+		return {'score':0}
+	#collect available moves
 	moves = []
-
-	for spot in availableSpots:
-		move = {'index': spot}
+	for spot in emptySpots:
+		move = {'index':spot}
 		board[spot] = player
-		if(player == '0'):
-			result = minimax(board, 'x')
+		#collect the score resulting from minmax
+		if player == "0":
+			result = minmax(board, "x")
 			move['score'] = result['score']
 		else:
-			result = minimax(board, '0')
+			result = minmax(board, "0")
 			move['score'] = result['score']
+		#reset the spot to empty
 		board[spot] = ' '
 		moves.append(move)
-
-	if(player == '0'):
+	#if it is the computer's turn loop over the moves and choose the move with the highest score
+	if(player == "0"):
 		bestScore = -10000
 		for move in moves:
 			if move['score'] > bestScore:
@@ -89,7 +89,7 @@ def minimax(board, player):
 
 def generateReply(board, machine):
 	dupBoard = getBoardCopy(board)
-	bestMove = minimax(dupBoard, machine)
+	bestMove = minmax(dupBoard, machine)
 	return bestMove['index']
 
 def play(board):
